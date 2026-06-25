@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import RegisterForm, LoginForm
 from django.contrib import messages
-from django.contrib.auth import authenticate,login, logout
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 
@@ -10,7 +10,9 @@ def register_view(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            messages.success(request, f"Account created for {user.username}. Please log in.")
+            messages.success(
+                request, f"Account created for {user.username}. Please log in."
+            )
             return redirect("login")
     else:
         form = RegisterForm()
@@ -52,6 +54,16 @@ def logout_view(request):
     messages.success(request, "You have been logged out.")
     return redirect("login")
 
+
 @login_required
 def dashboard(request):
-    return render(request, 'accounts/dashboard.html')
+    return render(request, "accounts/dashboard.html")
+
+
+@login_required
+def profile_view(request):
+    profile = request.user.profile
+    context = {
+        "profile": profile
+    }
+    return render(request, "accounts/profile.html", context)

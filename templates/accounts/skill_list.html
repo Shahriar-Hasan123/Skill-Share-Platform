@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}My Skills - SkillShare{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3 mb-4">
+    <h2 class="fw-bold mb-0">My Skills</h2>
+    <a href="{% url 'skill_create' %}" class="btn btn-primary">
+        + Add Skill
+    </a>
+</div>
+
+{% if skills %}
+
+    <!-- Skills Grid -->
+    <div class="row g-3">
+        {% for skill in skills %}
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-3">
+
+                    <!-- Name + Category Badge -->
+                    <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                        <h6 class="fw-bold mb-0">{{ skill.name }}</h6>
+                        <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill text-nowrap">
+                            {{ skill.get_category_display }}
+                        </span>
+                    </div>
+
+                    <!-- Description -->
+                    {% if skill.description %}
+                        <p class="text-muted small mb-3">
+                            {{ skill.description|truncatechars:80 }}
+                        </p>
+                    {% else %}
+                        <p class="text-muted small fst-italic mb-3">
+                            No description added.
+                        </p>
+                    {% endif %}
+
+                    <!-- Actions -->
+                    <div class="d-flex gap-2 mt-auto">
+                        
+                        <a href="#" class="btn btn-outline-secondary btn-sm">
+                            Edit
+                        </a>
+                        
+                        <a href="#" class="btn btn-outline-danger btn-sm">
+                            Delete
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+{% else %}
+
+    <!-- Empty State -->
+    <div class="text-center py-5">
+        <div class="mb-3">
+            <i class="bi bi-lightbulb fs-1 text-muted"></i>
+        </div>
+        <h5 class="text-muted">No skills added yet</h5>
+        <p class="text-muted small">
+            Add your first skill to let others know what you can teach.
+        </p>
+        <a href="{% url 'skill_create' %}" class="btn btn-primary">
+            Add Your First Skill
+        </a>
+    </div>
+
+{% endif %}
+
+{% endblock %}

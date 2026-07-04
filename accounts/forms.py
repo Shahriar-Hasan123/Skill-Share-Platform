@@ -34,3 +34,17 @@ class ProfileUpdateForm(forms.ModelForm):
         }
 
 
+class SkillForm(forms.ModelForm):
+
+    class Meta:
+        model = Skill
+        fields = ["name", "category", "description"]
+        widgets = {
+            "description": forms.Textarea(attrs={"rows": 3}),
+        }
+
+    def clean_name(self):
+        name = self.cleaned_data.get("name")
+        if name:
+            return name.strip().title()
+        return name

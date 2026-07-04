@@ -90,3 +90,31 @@ def profile_edit_view(request):
         "profile_form": profile_form,
     }
     return render(request, "accounts/profile_edit.html", context)
+
+
+@login_required
+def skill_create_view(request):
+    if request.method == "POST":
+        form = SkillForm(request.POST)
+        if form.is_valid():
+            skill = form.save(commit=False)
+            skill.user = request.user
+            skill.save()
+            messages.success(request, f'Skill "{skill.name}" added successfully.')
+            return redirect("skill_list")
+    else:
+        form = SkillForm()
+    context = {
+        "form": form,
+        "action": "Add",
+    }
+    return render(request, "accounts/skill_form.html", context)
+
+
+@login_required
+def skill_list_view(request):
+    skills = request.user.skills.all()
+    context = {
+        "skills": skills,
+    }
+    return render(request, "accounts/skill_list.html", context)

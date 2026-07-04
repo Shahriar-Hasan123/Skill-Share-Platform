@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegisterForm, LoginForm, UserUpdateForm, ProfileUpdateForm, SkillForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from .models import Skill
 
 
 def register_view(request):
@@ -75,9 +76,7 @@ def profile_edit_view(request):
 
     if request.method == "POST":
         user_form = UserUpdateForm(request.POST, instance=request.user)
-        profile_form = ProfileUpdateForm(
-            request.POST, request.FILES, instance=request.user.profile
-        )
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
 
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
@@ -118,3 +117,25 @@ def skill_list_view(request):
         "skills": skills,
     }
     return render(request, "accounts/skill_list.html", context)
+
+
+@login_required
+def skill_edit_view(request, skill_id):
+    skill = get_object_or_404(Skill, id=skill_id)
+    if skill.user != request.user:
+        messages.error(request, "You are not allowed to edit this skill.")
+        return redirect("skill_list")
+
+    if request.method == "POST":
+        form = SkillForm(request.POST, instance=skill)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Skill "{skill.name}" updated successfully.')
+            return redirect("skill_list")
+    else:
+        form = SkillForm(instance=skill)
+    context = {
+        "form": form,
+        "action": "Edit",
+    }
+    return render(request, "accounts/skill_form.html", context)

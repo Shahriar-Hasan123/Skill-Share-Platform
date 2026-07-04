@@ -12,7 +12,7 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'{self.user.username} Profile'
-    
+
     def get_avatar_url(self):
         if self.avatar:
             return self.avatar.url

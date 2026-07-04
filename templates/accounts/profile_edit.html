@@ -1,0 +1,191 @@
+{% extends 'base.html' %} 
+{% block title %}Edit Profile - SkillShare{% endblock%} 
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-8 col-xl-7">
+    <!-- Page Header -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <h2 class="fw-bold mb-0">Edit Profile</h2>
+      <a href="{% url 'profile' %}" class="btn btn-outline-secondary btn-sm">
+        Cancel
+      </a>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+
+      <!-- Section: Account Info -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+          <h5 class="fw-semibold mb-3">Account Information</h5>
+
+          <!-- First Name + Last Name -->
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-6">
+              <label
+                for="{{ user_form.first_name.id_for_label }}"
+                class="form-label"
+              >
+                First Name
+              </label>
+              <input
+                type="text"
+                name="{{ user_form.first_name.html_name }}"
+                id="{{ user_form.first_name.id_for_label }}"
+                class="form-control {% if user_form.first_name.errors %}is-invalid{% endif %}"
+                value="{{ user_form.first_name.value|default:'' }}"
+                placeholder="First name"
+              />
+              {% for error in user_form.first_name.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="col-12 col-sm-6">
+              <label for="{{ user_form.last_name.id_for_label }}" class="form-label">
+                Last Name
+              </label>
+              <input
+                type="text"
+                name="{{ user_form.last_name.html_name }}"
+                id="{{ user_form.last_name.id_for_label }}"
+                class="form-control {% if user_form.last_name.errors %}is-invalid{% endif %}"
+                value="{{ user_form.last_name.value|default:'' }}"
+                placeholder="Last name"
+              />
+              {% for error in user_form.last_name.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="mb-0">
+            <label for="{{ user_form.email.id_for_label }}" class="form-label">
+              Email Address
+            </label>
+            <input
+              type="email"
+              name="{{ user_form.email.html_name }}"
+              id="{{ user_form.email.id_for_label }}"
+              class="form-control {% if user_form.email.errors %}is-invalid{% endif %}"
+              value="{{ user_form.email.value|default:'' }}"
+              placeholder="Email address"
+            />
+            {% for error in user_form.email.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Profile Info -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+          <h5 class="fw-semibold mb-3">Profile Information</h5>
+
+          <!-- Avatar -->
+          <div class="mb-3">
+            <label class="form-label">Profile Picture</label>
+
+            <!-- Current Avatar Preview -->
+            <div class="mb-2">
+              <img
+                src="{{ request.user.profile.get_avatar_url }}"
+                alt="Current avatar"
+                class="rounded-circle border"
+                style="width: 70px; height: 70px; object-fit: cover"
+              />
+            </div>
+
+            <input
+              type="file"
+              name="{{ profile_form.avatar.html_name }}"
+              id="{{ profile_form.avatar.id_for_label }}"
+              class="form-control {% if profile_form.avatar.errors %}is-invalid{% endif %}"
+              accept="image/*"
+            />
+            <div class="form-text">
+              Accepted formats: JPG, PNG, GIF. Max size: 2MB.
+            </div>
+            {% for error in profile_form.avatar.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- Bio -->
+          <div class="mb-3">
+            <label for="{{ profile_form.bio.id_for_label }}" class="form-label">
+              Bio
+            </label>
+            <textarea
+              name="{{ profile_form.bio.html_name }}"
+              id="{{ profile_form.bio.id_for_label }}"
+              class="form-control {% if profile_form.bio.errors %}is-invalid{% endif %}"
+              rows="4"
+              placeholder="Tell others about yourself..."
+            >
+{{ profile_form.bio.value|default:'' }}</textarea
+            >
+            {% for error in profile_form.bio.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- Location -->
+          <div class="mb-3">
+            <label
+              for="{{ profile_form.location.id_for_label }}"
+              class="form-label"
+            >
+              Location
+            </label>
+            <input
+              type="text"
+              name="{{ profile_form.location.html_name }}"
+              id="{{ profile_form.location.id_for_label }}"
+              class="form-control {% if profile_form.location.errors %}is-invalid{% endif %}"
+              value="{{ profile_form.location.value|default:'' }}"
+              placeholder="e.g. Chattogram, Bangladesh"
+            />
+            {% for error in profile_form.location.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- Website -->
+          <div class="mb-0">
+            <label
+              for="{{ profile_form.website.id_for_label }}"
+              class="form-label"
+            >
+              Website
+            </label>
+            <input
+              type="url"
+              name="{{ profile_form.website.html_name }}"
+              id="{{ profile_form.website.id_for_label }}"
+              class="form-control {% if profile_form.website.errors %}is-invalid{% endif %}"
+              value="{{ profile_form.website.value|default:'' }}"
+              placeholder="https://yourwebsite.com"
+            />
+            {% for error in profile_form.website.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div
+        class="d-flex flex-column flex-sm-row justify-content-end gap-2 mb-4"
+      >
+        <a href="{% url 'profile' %}" class="btn btn-outline-secondary">
+          Cancel
+        </a>
+        <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

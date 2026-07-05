@@ -139,3 +139,19 @@ def skill_edit_view(request, skill_id):
         "action": "Edit",
     }
     return render(request, "accounts/skill_form.html", context)
+
+
+@login_required
+def skill_delete_view(request, skill_id):
+    skill = get_object_or_404(Skill, id=skill_id)
+    if request.user != skill.user:
+        messages.error(request, "You are not allowed to delete this skill.")
+        return redirect("skill_list")
+
+    if request.method == "POST":
+        skill_name = skill.name
+        skill.delete()
+        messages.success(request, f'Skill "{skill_name}" deleted successfully.')
+        return redirect("skill_list")
+
+    return render(request, "accounts/skill_confirm_delete.html", {"skill": skill})
